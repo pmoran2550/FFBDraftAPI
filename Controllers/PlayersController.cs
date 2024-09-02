@@ -1,12 +1,6 @@
 ﻿using FFBDraftAPI.Accessors;
 using FFBDraftAPI.EntityFramework;
-using FFBDraftAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PlayerApi.Controllers
 {
@@ -34,5 +28,20 @@ namespace PlayerApi.Controllers
             return Ok(list);
         }
 
+        /// <summary>
+        /// Bulk load players
+        /// </summary>
+        /// <remarks>
+        /// Load player information from a file
+        /// </remarks>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult OnPostUploadAsync(IFormFile file)
+        {
+            playerAccessor.BulkLoadPlayers(file);
+
+            return Ok();
+        }
     }
 }
