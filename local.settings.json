@@ -1,0 +1,5 @@
+{
+  "AppSettings": {
+    "FFBDraftdbConnectionString": "Server=tcp:pmoransqlserver.database.windows.net,1433;Initial Catalog=FFBDB;Persist Security Info=False;User ID=pmoran2550;Password=pipettE11;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  }
+}
