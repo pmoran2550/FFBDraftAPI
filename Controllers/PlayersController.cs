@@ -29,6 +29,20 @@ namespace PlayerApi.Controllers
         }
 
         /// <summary>
+        /// Get All Players for a year
+        /// </summary>
+        /// <remarks>
+        /// Gets all players for specified year in db
+        /// </remarks>
+        [HttpGet("year/{year}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<FFBDraftAPI.Models.Player>>> GetAllPlayers(int year)
+        {
+            List<FFBDraftAPI.Models.Player> list = await playerAccessor.GetAllPlayersByYearAsync(year);
+            return Ok(list);
+        }
+
+        /// <summary>
         /// Bulk load players
         /// </summary>
         /// <remarks>

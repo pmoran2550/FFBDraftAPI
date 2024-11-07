@@ -37,6 +37,28 @@ namespace FFBDraftAPI.Accessors
             return playerListModel;
         }
 
+        public async Task<List<Models.Player>> GetAllPlayersByYearAsync(int year)
+        {
+            var playerListEF = await _context.Players.Where(x => x.Year == year).ToListAsync();
+            List<Models.Player> playerListModel = new List<Models.Player>();
+            foreach (var player in playerListEF)
+            {
+                Models.Player playerModel = new Models.Player()
+                {
+                    Id = player.Id,
+                    Name = player.Name,
+                    Rank = player.Rank,
+                    NFLTeam = ConvertToNFLTeam(player.Nflteam),
+                    Position = ConvertToPosition(player.Position),
+                    ByeWeek = player.ByeWeek,
+                    FFBTeam = player.Ffbteam,
+                    Year = player.Year
+                };
+                playerListModel.Add(playerModel);
+            }
+            return playerListModel;
+        }
+
         public void BulkLoadPlayers(IFormFile file)
         {
             using var reader = new StreamReader(file.OpenReadStream());
