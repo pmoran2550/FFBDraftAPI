@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FFBDraftAPI.Accessors
 {
-    public class PlayerAccessor : IPlayer
+    public class PlayerAccessor : IPlayerAccessor
     {
         private readonly FfbdbContext _context;
         private const string CURRENTYEAR = "2024";

@@ -14,6 +14,8 @@
         public Player()
         {
             Name = "";
+            Position = "Unknown";
+            NFLTeam = "None";
         }
     }
 

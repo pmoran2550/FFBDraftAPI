@@ -2,7 +2,7 @@
 
 namespace FFBDraftAPI.Accessors
 {
-    public interface IPlayer
+    public interface IPlayerAccessor
     {
         Task<List<Player>> GetAllPlayersAsync();
     }
