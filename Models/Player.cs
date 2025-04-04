@@ -5,8 +5,8 @@
         public Guid Id { get; set; }
         public string Name { get; set; }
         public int? Rank { get; set; }
-        public NFLTeam NFLTeam { get; set; }
-        public Position Position { get; set; }
+        public string NFLTeam { get; set; }
+        public string Position { get; set; }
         public int? ByeWeek { get; set; }
         public Guid? FFBTeam { get; set; }
         public int? Year { get; set; }
@@ -27,40 +27,41 @@
         K,
         DEF
     }
+
     public enum NFLTeam
     {
         None = 0,
-        ArizonaCardinals,
-        AtlantaFalcons,
-        BaltimoreRavens,
-        BuffaloBills,
-        CarolinaPanthers,
-        ChicagoBears,
-        CincinnatiBengals,
-        ClevelandBrowns,
-        DallasCowboys,
-        DenverBroncos,
-        DetroitLions,
-        GreenBayPackers,
-        HoustonTexans,
-        IndianapolisColts,
-        JacksonvilleJaguars,
-        KansasCityChiefs,
-        LasVegasRaiders,
-        LosAngelesChargers,
-        LosAngelesRams,
-        MiamiDolphins,
-        MinnesotaVikings,
-        NewEnglandPatriots,
-        NewOrleansSaints,
-        NewYorkGiants,
-        NewYorkJets,
-        PhiladelphiaEagles,
-        PittsburghSteelers,
-        SanFrancisco49ers,
-        SeattleSeahawks,
-        TampaBayBuccaneers,
-        TennesseeTitans,
-        WashingtonCommanders
+        ARI,
+        ATL,
+        BAL,
+        BUF,
+        CAR,
+        CHI,
+        CIN,
+        CLE,
+        DAL,
+        DEN,
+        DET,
+        GB,
+        HOU,
+        IND,
+        JAC,
+        KC,
+        LV,
+        LAC,
+        LAR,
+        MIA,
+        MIN,
+        NE,
+        NO,
+        NYG,
+        NYJ,
+        PHI,
+        PIT,
+        SF,
+        SEA,
+        TB,
+        TEN,
+        WAS
     }
 }

@@ -99,20 +99,20 @@ namespace FFBDraftAPI.Accessors
             _context.SaveChanges();
         }
 
-        private NFLTeam ConvertToNFLTeam(int? team)
+        private string ConvertToNFLTeam(int? team)
         {
-            if (team != null)
-                return (NFLTeam)team;
+            if (team != null && team < nflTeamStr.Length)
+                return nflTeamStr[(int)team];
             else
-                return NFLTeam.None;
+                return "None";
         }
 
-        private Position ConvertToPosition(int? position)
+        private String ConvertToPosition(int? position)
         {
             if (position != null)
-                return (Position)position;
+                return positionStr[(int)position];
             else
-                return Position.Unknown;
+                return "Unknown";
         }
 
         private Position ConvertPositionFantasyPros(string position)
@@ -133,79 +133,127 @@ namespace FFBDraftAPI.Accessors
                 return Position.Unknown;
         }
 
+        public string[] positionStr = new string[]
+        {
+            "Unknown",
+            "QB",
+            "RB",
+            "WR",
+            "TE",
+            "K",
+            "DEF"
+        };
+
         private NFLTeam ConvertNFLTeamFantasyPros(string team)
         {
             switch (team)
             {
                 case "ARI":
-                    return NFLTeam.ArizonaCardinals;
+                    return NFLTeam.ARI;
                 case "ATL":
-                    return NFLTeam.AtlantaFalcons;
+                    return NFLTeam.ATL;
                 case "BAL":
-                    return NFLTeam.BaltimoreRavens;
+                    return NFLTeam.BAL;
                 case "BUF":
-                    return NFLTeam.BuffaloBills;
+                    return NFLTeam.BUF;
                 case "CAR":
-                    return NFLTeam.CarolinaPanthers;
+                    return NFLTeam.CAR;
                 case "CHI":
-                    return NFLTeam.ChicagoBears;
+                    return NFLTeam.CHI;
                 case "CIN":
-                    return NFLTeam.CincinnatiBengals;
+                    return NFLTeam.CIN;
                 case "CLE":
-                    return NFLTeam.ClevelandBrowns;
+                    return NFLTeam.CLE;
                 case "DAL":
-                    return NFLTeam.DallasCowboys;
+                    return NFLTeam.DAL;
                 case "DEN":
-                    return NFLTeam.DenverBroncos;
+                    return NFLTeam.DEN;
                 case "DET":
-                    return NFLTeam.DetroitLions;
+                    return NFLTeam.DET;
                 case "GB":
-                    return NFLTeam.GreenBayPackers;
+                    return NFLTeam.GB;
                 case "HOU":
-                    return NFLTeam.HoustonTexans;
+                    return NFLTeam.HOU;
                 case "IND":
-                    return NFLTeam.IndianapolisColts;
+                    return NFLTeam.IND;
                 case "JAC":
-                    return NFLTeam.JacksonvilleJaguars;
+                    return NFLTeam.JAC;
                 case "KC":
-                    return NFLTeam.KansasCityChiefs;
+                    return NFLTeam.KC;
                 case "LV":
-                    return NFLTeam.LasVegasRaiders;
+                    return NFLTeam.LV;
                 case "LAC":
-                    return NFLTeam.LosAngelesChargers;
+                    return NFLTeam.LAC;
                 case "LAR":
-                    return NFLTeam.LosAngelesRams;
+                    return NFLTeam.LAR;
                 case "MIA":
-                    return NFLTeam.MiamiDolphins;
+                    return NFLTeam.MIA;
                 case "MIN":
-                    return NFLTeam.MinnesotaVikings;
+                    return NFLTeam.MIN;
                 case "NE":
-                    return NFLTeam.NewEnglandPatriots;
+                    return NFLTeam.NE;
                 case "NO":
-                    return NFLTeam.NewOrleansSaints;
+                    return NFLTeam.NO;
                 case "NYG":
-                    return NFLTeam.NewYorkGiants;
+                    return NFLTeam.NYG;
                 case "NYJ":
-                    return NFLTeam.NewYorkJets;
+                    return NFLTeam.NYJ;
                 case "PHI":
-                    return NFLTeam.PhiladelphiaEagles;
+                    return NFLTeam.PHI;
                 case "PIT":
-                    return NFLTeam.PittsburghSteelers;
+                    return NFLTeam.PIT;
                 case "SF":
-                    return NFLTeam.SanFrancisco49ers;
+                    return NFLTeam.SF;
                 case "SEA":
-                    return NFLTeam.SeattleSeahawks;
+                    return NFLTeam.SEA;
                 case "TB":
-                    return NFLTeam.TampaBayBuccaneers;
+                    return NFLTeam.TB;
                 case "TEN":
-                    return NFLTeam.TennesseeTitans;
+                    return NFLTeam.TEN;
                 case "WAS":
-                    return NFLTeam.WashingtonCommanders;
+                    return NFLTeam.WAS;
 
                 default:
                     return NFLTeam.None;
             }
         }
+
+        public string[] nflTeamStr = new string[]
+        {
+            "None",
+            "ARI",
+            "ATL",
+            "BAL",
+            "BUF",
+            "CAR",
+            "CHI",
+            "CIN",
+            "CLE",
+            "DAL",
+            "DEN",
+            "DET",
+            "GB",
+            "HOU",
+            "IND",
+            "JAC",
+            "KC",
+            "LV",
+            "LAC",
+            "LAR",
+            "MIA",
+            "MIN",
+            "NE",
+            "NO",
+            "NYG",
+            "NYJ",
+            "PHI",
+            "PIT",
+            "SF",
+            "SEA",
+            "TB",
+            "TEN",
+            "WAS"
+        };
 
         private int ConvertByeWeekFantasyPros(string byeweek)
         {
@@ -213,6 +261,5 @@ namespace FFBDraftAPI.Accessors
             if (success) { return result;}
             return 0;            
         }
-
     }
 }
