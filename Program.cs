@@ -3,13 +3,28 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using FFBDraftAPI.EntityFramework;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = domain;
+        options.Audience = builder.Configuration["Auth0:Audience"];
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = ClaimTypes.NameIdentifier
+        };
+    });
 
 builder.Services.AddCors(options =>
 {
@@ -39,6 +54,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
