@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using FFBDraftAPI.EntityFramework;
 using FFBDraftAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FFBDraftAPI.Controllers
 {
@@ -23,6 +24,7 @@ namespace FFBDraftAPI.Controllers
         /// Get all FFB Teams 
         /// </remarks>
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<FFBTeams>>> GetFFBTeamAsync()
