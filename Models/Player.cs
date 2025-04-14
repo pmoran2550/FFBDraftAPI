@@ -9,6 +9,8 @@
         public string Position { get; set; }
         public int? ByeWeek { get; set; }
         public Guid? FFBTeam { get; set; }
+        public string FFBTeamName { get; set; }
+        public string FFBTeamManager { get; set; }
         public int? Year { get; set; }
 
         public Player()
@@ -16,6 +18,8 @@
             Name = "";
             Position = "Unknown";
             NFLTeam = "None";
+            FFBTeamName = "";
+            FFBTeamManager = "";
         }
     }
 

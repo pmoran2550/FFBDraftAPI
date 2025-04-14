@@ -39,10 +39,17 @@ namespace FFBDraftAPI.Accessors
 
         public async Task<List<Models.Player>> GetAllPlayersByYearAsync(int year)
         {
+            var teamListEF = await _context.Ffbteams.ToListAsync();
             var playerListEF = await _context.Players.Where(x => x.Year == year).ToListAsync();
             List<Models.Player> playerListModel = new List<Models.Player>();
             foreach (var player in playerListEF)
             {
+                Ffbteam? ffbTeam = null;
+
+                if (teamListEF != null && player.Ffbteam != null)
+                {
+                    ffbTeam = teamListEF.FirstOrDefault<Ffbteam>(team => team.Id == player.Ffbteam);
+                }
                 Models.Player playerModel = new Models.Player()
                 {
                     Id = player.Id,
@@ -52,6 +59,8 @@ namespace FFBDraftAPI.Accessors
                     Position = ConvertToPosition(player.Position),
                     ByeWeek = player.ByeWeek,
                     FFBTeam = player.Ffbteam,
+                    FFBTeamName = ffbTeam?.Name ?? " ",
+                    FFBTeamManager = ffbTeam?.Manager ?? " ",
                     Year = player.Year
                 };
                 playerListModel.Add(playerModel);
