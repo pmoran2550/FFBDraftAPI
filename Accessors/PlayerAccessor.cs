@@ -1,5 +1,6 @@
 ﻿using FFBDraftAPI.EntityFramework;
 using FFBDraftAPI.Models;
+using FFBDraftAPI.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -66,6 +67,40 @@ namespace FFBDraftAPI.Accessors
                 playerListModel.Add(playerModel);
             }
             return playerListModel;
+        }
+
+        public async Task<PlayerResult> EditPlayer(Models.Player player)
+        {
+            PlayerResult result = new PlayerResult();
+
+            try
+            {
+                using (var context = new FfbdbContext())
+                {
+                    EntityFramework.Player? playerToUpdate = context.Players.FirstOrDefault(x => x.Id == player.Id);
+                    if (playerToUpdate != null)
+                    {
+                        playerToUpdate.Name = player.Name;
+                        playerToUpdate.Rank = player.Rank;
+                        playerToUpdate.Nflteam = (int?)ConvertNFLTeamFantasyPros(player.NFLTeam);
+                        playerToUpdate.Position = (int?)ConvertPositionFantasyPros(player.Position);
+                        playerToUpdate.ByeWeek = player.ByeWeek;
+                        playerToUpdate.Ffbteam = player.FFBTeam;
+                        playerToUpdate.Year = player.Year;
+
+                        await context.SaveChangesAsync();
+                    }
+                }
+                result.success = true;
+                result.data = player;
+            }
+            catch(Exception ex)
+            {
+                result.success = false;
+                result.message = ex.Message;
+                result.data = null;
+            }
+            return result;
         }
 
         public void BulkLoadPlayers(IFormFile file)

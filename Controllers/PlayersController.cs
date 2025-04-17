@@ -1,5 +1,6 @@
 ﻿using FFBDraftAPI.Accessors;
 using FFBDraftAPI.EntityFramework;
+using FFBDraftAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PlayerApi.Controllers
@@ -40,6 +41,27 @@ namespace PlayerApi.Controllers
         {
             List<FFBDraftAPI.Models.Player> list = await playerAccessor.GetAllPlayersByYearAsync(year);
             return Ok(list);
+        }
+
+        /// <summary>
+        /// Put player updates
+        /// </summary>
+        /// <remarks>
+        /// Update data for 1 player
+        /// </remarks>
+        [HttpPut("{Id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<FFBDraftAPI.Models.Player>>> UpdatePlayer(string Id, FFBDraftAPI.Models.Player updatedPlayer)
+        {
+            updatedPlayer.Id = new Guid(Id);
+
+            PlayerResult result = await playerAccessor.EditPlayer(updatedPlayer);
+
+            if (result != null && result.success)
+                return Ok(result);
+            else
+                return BadRequest(result);
         }
 
         /// <summary>
