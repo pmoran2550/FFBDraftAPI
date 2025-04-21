@@ -1,4 +1,5 @@
-﻿using FFBDraftAPI.EntityFramework;
+﻿using FFBDraftAPI.Common;
+using FFBDraftAPI.EntityFramework;
 using FFBDraftAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -96,6 +97,13 @@ namespace FFBDraftAPI.Accessors
 
                     if (teamToRemove != null)
                     {
+                        // Find all players associated with this team and set them to undrafted
+                        List<FFBDraftAPI.EntityFramework.Player> playerList = await context.Players.Where(x => x.Ffbteam == teamToRemove.Id).ToListAsync();
+                        foreach(FFBDraftAPI.EntityFramework.Player player in playerList)
+                        {
+                            player.Ffbteam = new Guid(Config.UndraftedTeamId);
+                        }
+                        // Remove team
                         context.Ffbteams.Remove(teamToRemove);
                         await context.SaveChangesAsync();
                     }

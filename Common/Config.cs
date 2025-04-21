@@ -15,6 +15,19 @@
             }
         }
 
+        public static string UndraftedTeamId
+        {
+            get
+            {
+                var connectionString = GetConfigValue("AppSettings:UndraftedTeamId");
+                if (!string.IsNullOrEmpty(connectionString))
+                {
+                    return connectionString;
+                }
+                return Environment.GetEnvironmentVariable("UndraftedTeamId") ?? " ";
+            }
+        }
+
         static IConfiguration? _cashedConfig;
         private static IConfiguration Configuration
         {
