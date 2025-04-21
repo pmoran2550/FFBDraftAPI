@@ -14,7 +14,14 @@ var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Version = "1.0.0",
+        Title = "FFB API"
+    });
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -37,9 +44,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-//// Add DbContext
-//builder.Services.AddDbContext<PlayerContext>(options =>
-//    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<FfbdbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FFBDraftdbConnectionString")));
 
