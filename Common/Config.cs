@@ -28,6 +28,19 @@
             }
         }
 
+        public static string UndraftedTeamManager
+        {
+            get
+            {
+                var connectionString = GetConfigValue("AppSettings:UndraftedTeamManager");
+                if (!string.IsNullOrEmpty(connectionString))
+                {
+                    return connectionString;
+                }
+                return Environment.GetEnvironmentVariable("UndraftedTeamManager") ?? " ";
+            }
+        }
+
         static IConfiguration? _cashedConfig;
         private static IConfiguration Configuration
         {

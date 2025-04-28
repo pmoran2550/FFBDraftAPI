@@ -8,8 +8,6 @@ namespace FFBDraftAPI.Accessors
 {
     public class FFBTeamAccessor : IFFBTeamAccessor
     {
-        //private readonly FfbdbContext _context;
-
         public FFBTeamAccessor(){ }
 
         public async Task<FFBTeamsResult> GetAllFFBTeamsAsync()
@@ -22,18 +20,35 @@ namespace FFBDraftAPI.Accessors
                 using (var context = new FfbdbContext())
                 {
                     var teamListEF = await context.Ffbteams.ToListAsync();
-                    foreach (var team in teamListEF)
+                    var teamAvailable = teamListEF.Find(x => x.Manager == Config.UndraftedTeamManager);
+                    if (teamAvailable != null)
                     {
                         Models.FFBTeams teamModel = new Models.FFBTeams()
                         {
-                            Id = team.Id,
-                            Name = team.Name,
-                            Manager = team.Manager,
-                            ThirdPartyID = team.ThirdPartyId,
-                            Email = team.Email,
-                            Nickname = team.Nickname
+                            Id = teamAvailable.Id,
+                            Name = teamAvailable.Name,
+                            Manager = teamAvailable.Manager,
+                            ThirdPartyID = teamAvailable.ThirdPartyId,
+                            Email = teamAvailable.Email,
+                            Nickname = teamAvailable.Nickname
                         };
                         teamListModel.Add(teamModel);
+                    }
+                    foreach (var team in teamListEF)
+                    {
+                        if (team.Manager != Config.UndraftedTeamManager)
+                        {
+                            Models.FFBTeams teamModel = new Models.FFBTeams()
+                            {
+                                Id = team.Id,
+                                Name = team.Name,
+                                Manager = team.Manager,
+                                ThirdPartyID = team.ThirdPartyId,
+                                Email = team.Email,
+                                Nickname = team.Nickname
+                            };
+                            teamListModel.Add(teamModel);
+                        }
                     }
                 }
                 result.success = true;
