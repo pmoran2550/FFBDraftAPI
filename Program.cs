@@ -6,6 +6,7 @@ using FFBDraftAPI.EntityFramework;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using FFBDraftAPI.Communication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,13 +40,16 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyOrigin()
+            .AllowCredentials()
             .AllowAnyMethod();
     });
 });
 
 builder.Services.AddDbContext<FfbdbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FFBDraftdbConnectionString")));
+
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<NotificationService>();
 
 var app = builder.Build();
 
@@ -61,5 +65,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseDefaultFiles();
+app.UseStaticFiles();
+app.MapHub<NotificationHub>("/notificationhub");
 
 app.Run();

@@ -1,7 +1,9 @@
 ﻿using FFBDraftAPI.Accessors;
+using FFBDraftAPI.Communication;
 using FFBDraftAPI.EntityFramework;
 using FFBDraftAPI.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace PlayerApi.Controllers
 {
@@ -10,9 +12,11 @@ namespace PlayerApi.Controllers
     public class PlayersController : ControllerBase
     {
         protected PlayerAccessor playerAccessor;
-        public PlayersController(FfbdbContext context)
+        protected NotificationService _notificationService;
+        public PlayersController(FfbdbContext context, NotificationService notificationService)
         {
             playerAccessor = new PlayerAccessor(context);
+            _notificationService = notificationService;
         }
 
         /// <summary>
@@ -59,7 +63,10 @@ namespace PlayerApi.Controllers
             PlayerResult result = await playerAccessor.EditPlayer(updatedPlayer);
 
             if (result != null && result.success)
+            {
+                await _notificationService.NotifyAll("all", "playersUpdated");
                 return Ok(result);
+            }
             else
                 return BadRequest(result);
         }
