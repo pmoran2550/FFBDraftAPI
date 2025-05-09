@@ -86,5 +86,26 @@ namespace PlayerApi.Controllers
 
             return Ok();
         }
+
+        /// <summary>
+        /// Get app version
+        /// </summary>
+        /// <remarks>
+        /// Gets app version
+        /// </remarks>
+        [HttpGet("version")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetAppVersion()
+        {
+            string version = playerAccessor.GetAppVersion();
+            VersionResult result = new VersionResult()
+            {
+                success = true,
+                message = " ",
+                data = version
+            };
+
+            return Ok(result);
+        }
     }
 }

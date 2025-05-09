@@ -143,6 +143,13 @@ namespace FFBDraftAPI.Accessors
             _context.SaveChanges();
         }
 
+        public string GetAppVersion()
+        {
+            string version = typeof(Program).Assembly?.GetName()?.Version?.ToString() ?? "0.0.0";
+            return version;
+        }
+
+
         private string ConvertToNFLTeam(int? team)
         {
             if (team != null && team < nflTeamStr.Length)
