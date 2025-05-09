@@ -7,10 +7,10 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <!-- Note that this version is updated separately from the Swagger version found in the Program.cs file -->
     <VersionPrefix>1.0.0</VersionPrefix>
-    <BuildNumber>0</BuildNumber>
-    <AssemblyVersion>$(VersionPrefix).$(BuildNumber)</AssemblyVersion>
-    <FileVersion>$(VersionPrefix).$(BuildNumber)</FileVersion>
-    <InformationalVersion>$(VersionPrefix)-$(BuildNumber)</InformationalVersion>
+    <VersionSuffix>0</VersionSuffix>
+    <AssemblyVersion>$(VersionPrefix).$(VersionSuffix)</AssemblyVersion>
+    <FileVersion>$(VersionPrefix).$(VersionSuffix)</FileVersion>
+    <InformationalVersion>$(VersionPrefix)-$(VersionSuffix)</InformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>
