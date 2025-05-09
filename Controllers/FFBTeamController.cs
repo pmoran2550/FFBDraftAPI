@@ -10,7 +10,7 @@ namespace FFBDraftAPI.Controllers
     [Route("api/[controller]")]
     public class FFBTeamController : ControllerBase
     {
-        protected FFBTeamAccessor teamsAccessor;
+        protected IFFBTeamAccessor teamsAccessor;
 
         public FFBTeamController(FfbdbContext context)
         {

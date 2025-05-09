@@ -11,7 +11,7 @@ namespace PlayerApi.Controllers
     [Route("api/[controller]")]
     public class PlayersController : ControllerBase
     {
-        protected PlayerAccessor playerAccessor;
+        protected IPlayerAccessor playerAccessor;
         protected NotificationService _notificationService;
         public PlayersController(FfbdbContext context, NotificationService notificationService)
         {
