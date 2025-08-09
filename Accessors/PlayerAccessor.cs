@@ -3,13 +3,28 @@ using FFBDraftAPI.Models;
 using FFBDraftAPI.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using CsvHelper;
+using CsvHelper.Configuration;
+using System.Globalization;
 
 namespace FFBDraftAPI.Accessors
 {
+    public class PlayerCsvRecord
+    {
+        public int Rank { get; set; }
+        public int Tier { get; set; } 
+        public string Name { get; set; }
+        public string NFLTeam { get; set; }
+        public string Position { get; set; }
+        public string ByeWeek { get; set; }
+        public string SOS { get; set; }
+        public string ECRvsADP { get; set; }
+    }
+
     public class PlayerAccessor : IPlayerAccessor
     {
         private readonly FfbdbContext _context;
-        private const string CURRENTYEAR = "2024";
+        private const string CURRENTYEAR = "2025";
 
         public PlayerAccessor(FfbdbContext context) 
         { 
@@ -106,39 +121,38 @@ namespace FFBDraftAPI.Accessors
         public void BulkLoadPlayers(IFormFile file)
         {
             using var reader = new StreamReader(file.OpenReadStream());
-
-            string? line = reader.ReadLine(); // Read headers
-            line = reader.ReadLine(); 
-            while (line != null)
+            using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                string[] parts = line.Split(',');
-                if (parts.Length == 8)
+                HasHeaderRecord = true,
+                //IgnoreQuotes = false
+            });
+
+            var records = csv.GetRecords<PlayerCsvRecord>();
+            foreach (var record in records)
+            {
+                FFBDraftAPI.EntityFramework.Player newPlayer = new FFBDraftAPI.EntityFramework.Player()
                 {
-                    FFBDraftAPI.EntityFramework.Player newPlayer = new FFBDraftAPI.EntityFramework.Player()
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = parts[2],
-                        Rank = int.Parse(parts[0]),
-                        Position = (int?)ConvertPositionFantasyPros(parts[4]),
-                        Nflteam = (int?)ConvertNFLTeamFantasyPros(parts[3]),
-                        ByeWeek = ConvertByeWeekFantasyPros(parts[5]),
-                        Ffbteam = null,
-                        Year = int.Parse(CURRENTYEAR)
-                    };
-                    var existingPlayer = _context.Players.FirstOrDefault(p => p.Name.Equals(newPlayer.Name) && p.Year == newPlayer.Year);
-                    if (existingPlayer == null)
-                        _context.Players.Add(newPlayer);
-                    else
-                    {
-                        existingPlayer.Rank = newPlayer.Rank;
-                        existingPlayer.Position = newPlayer.Position;
-                        existingPlayer.Nflteam = newPlayer.Nflteam;
-                        existingPlayer.ByeWeek = newPlayer.ByeWeek;
-                        existingPlayer.Ffbteam = newPlayer.Ffbteam;
-                        _context.Players.Update(existingPlayer);
-                    }
+                    Id = Guid.NewGuid(),
+                    Name = record.Name,
+                    Rank = record.Rank,
+                    Position = (int?)ConvertPositionFantasyPros(record.Position),
+                    Nflteam = (int?)ConvertNFLTeamFantasyPros(record.NFLTeam),
+                    ByeWeek = ConvertByeWeekFantasyPros(record.ByeWeek),
+                    Ffbteam = null,
+                    Year = int.Parse(CURRENTYEAR)
+                };
+                var existingPlayer = _context.Players.FirstOrDefault(p => p.Name.Equals(newPlayer.Name) && p.Year == newPlayer.Year);
+                if (existingPlayer == null)
+                    _context.Players.Add(newPlayer);
+                else
+                {
+                    existingPlayer.Rank = newPlayer.Rank;
+                    existingPlayer.Position = newPlayer.Position;
+                    existingPlayer.Nflteam = newPlayer.Nflteam;
+                    existingPlayer.ByeWeek = newPlayer.ByeWeek;
+                    existingPlayer.Ffbteam = newPlayer.Ffbteam;
+                    _context.Players.Update(existingPlayer);
                 }
-                line = reader.ReadLine();
             }
             _context.SaveChanges();
         }
