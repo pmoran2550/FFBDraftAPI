@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FFBDraftAPI.Common;
+using FFBDraftAPI.TempEf;
 using Microsoft.EntityFrameworkCore;
-using FFBDraftAPI.Common;
+using System;
+using System.Collections.Generic;
 
 namespace FFBDraftAPI.EntityFramework;
 
@@ -15,6 +16,7 @@ public partial class FfbdbContext : DbContext
         : base(options)
     {
     }
+    public virtual DbSet<Draft> Drafts { get; set; }
 
     public virtual DbSet<Ffbteam> Ffbteams { get; set; }
 
@@ -39,6 +41,7 @@ public partial class FfbdbContext : DbContext
             entity.Property(e => e.ThirdPartyId)
                 .HasMaxLength(50)
                 .HasColumnName("ThirdPartyID");
+            entity.Property(e => e.DraftOrder);
         });
 
         modelBuilder.Entity<Player>(entity =>
@@ -47,6 +50,15 @@ public partial class FfbdbContext : DbContext
             entity.Property(e => e.Ffbteam).HasColumnName("FFBTeam");
             entity.Property(e => e.Name).HasMaxLength(50);
             entity.Property(e => e.Nflteam).HasColumnName("NFLTeam");
+        });
+
+        modelBuilder.Entity<Draft>(entity =>
+        {
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.DraftNumber);
+            entity.Property(e => e.PlayerId).HasColumnName("PlayerID");
+            entity.Property(e => e.FfbteamId).HasColumnName("FFBTeamID");
+            entity.Property(e => e.Year);
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -16,4 +16,6 @@ public partial class Ffbteam
     public string? ThirdPartyId { get; set; }
 
     public string? Nickname { get; set; }
+
+    public short DraftOrder { get; set; }
 }
