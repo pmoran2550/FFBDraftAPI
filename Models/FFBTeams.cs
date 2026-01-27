@@ -8,6 +8,7 @@
         public string? ThirdPartyID { get; set; }
         public string? Email { get; set; }
         public string? Nickname { get; set; }    
+        public int DraftOrder { get; set; }
 
         public FFBTeams()
         {

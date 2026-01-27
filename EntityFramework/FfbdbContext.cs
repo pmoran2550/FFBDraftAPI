@@ -1,8 +1,5 @@
 ﻿using FFBDraftAPI.Common;
-using FFBDraftAPI.TempEf;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 
 namespace FFBDraftAPI.EntityFramework;
 

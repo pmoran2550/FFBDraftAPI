@@ -17,5 +17,5 @@ public partial class Ffbteam
 
     public string? Nickname { get; set; }
 
-    public short DraftOrder { get; set; }
+    public int? DraftOrder { get; set; }
 }
