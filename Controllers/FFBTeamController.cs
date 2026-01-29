@@ -12,9 +12,9 @@ namespace FFBDraftAPI.Controllers
     {
         protected IFFBTeamAccessor teamsAccessor;
 
-        public FFBTeamController(FfbdbContext context)
+        public FFBTeamController(IFFBTeamAccessor teamsAccessor)
         {
-            teamsAccessor = new FFBTeamAccessor();
+            this.teamsAccessor = teamsAccessor ?? throw new ArgumentNullException(nameof(teamsAccessor));
         }
 
         /// <summary>

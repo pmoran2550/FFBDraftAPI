@@ -13,9 +13,9 @@ namespace PlayerApi.Controllers
     {
         protected IPlayerAccessor playerAccessor;
         protected NotificationService _notificationService;
-        public PlayersController(FfbdbContext context, NotificationService notificationService)
+        public PlayersController(NotificationService notificationService, IPlayerAccessor playerAccessor)
         {
-            playerAccessor = new PlayerAccessor(context);
+            this.playerAccessor = playerAccessor ?? throw new ArgumentNullException(nameof(playerAccessor));
             _notificationService = notificationService;
         }
 

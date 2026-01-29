@@ -1,12 +1,13 @@
+using FFBDraftAPI.Accessors;
+using FFBDraftAPI.Communication;
+using FFBDraftAPI.EntityFramework;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
-using FFBDraftAPI.EntityFramework;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using FFBDraftAPI.Communication;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,9 +20,9 @@ builder.Services.AddEndpointsApiExplorer();
 //  This is by design so the versions can be updated separately.
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Version = "1.0.0",
+        Version = "2.0.0",
         Title = "FFB API"
     });
 });
@@ -49,6 +50,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<FfbdbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FFBDraftdbConnectionString")));
+
+builder.Services.AddScoped<IFFBTeamAccessor, FFBTeamAccessor>();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<NotificationService>();
