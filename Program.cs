@@ -16,8 +16,7 @@ var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-// The Swagger version showed here will not match the version given in the .csproj file. 
-//  This is by design so the versions can be updated separately.
+// Register Swagger document as 'v2'
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -52,6 +51,7 @@ builder.Services.AddDbContext<FfbdbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FFBDraftdbConnectionString")));
 
 builder.Services.AddScoped<IFFBTeamAccessor, FFBTeamAccessor>();
+builder.Services.AddScoped<IPlayerAccessor, PlayerAccessor>();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<NotificationService>();
@@ -62,7 +62,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    // Point Swagger UI at the v2 document
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "FFB API v2");
+    });
 }
 
 app.UseCors("AllowAngularApp");
