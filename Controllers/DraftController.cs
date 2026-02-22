@@ -70,7 +70,7 @@ namespace FFBDraftAPI.Controllers
         /// <summary>
         /// Edit draft item
         /// </summary>
-        /// <remarks
+        /// <remarks>
         /// Edit draft item with changes supplied
         /// The draft item is replaced with the supplied draft item
         /// </remarks>
@@ -90,7 +90,7 @@ namespace FFBDraftAPI.Controllers
         /// <summary>
         /// Remove draft item
         /// </summary>
-        /// <remarks
+        /// <remarks>
         /// Remove the draft item with the supplied id
         /// </remarks>
         [HttpDelete("{Id}")]
