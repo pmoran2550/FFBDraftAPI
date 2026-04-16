@@ -132,7 +132,21 @@ namespace FFBDraftAPI.Accessors
 
             using (var context = new FfbdbContext())
             {
-                Models.Draft newEFDraft = new Models.Draft()
+                //Models.Draft newEFDraft = new Models.Draft()
+                //{
+                //    Id = Guid.NewGuid(),
+                //    FFBTeamManager = newDraft.FFBTeamManager,
+                //    FFBTeamName = newDraft.FFBTeamName,
+                //    FfbteamId = newDraft.FfbteamId,
+                //    DraftNumber = newDraft.DraftNumber,
+                //    PlayerId = newDraft.PlayerId,
+                //    PlayerNFLTeam = newDraft.PlayerNFLTeam,
+                //    PlayerName = newDraft.PlayerName,
+                //    PlayerPosition = newDraft.PlayerPosition,
+                //    Year = newDraft.Year
+                //};
+
+                EntityFramework.Draft newEFDraft = new EntityFramework.Draft()
                 {
                     Id = Guid.NewGuid(),
                     DraftNumber = newDraft.DraftNumber,

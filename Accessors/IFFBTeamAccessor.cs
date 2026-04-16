@@ -7,6 +7,7 @@ namespace FFBDraftAPI.Accessors
     {
         Task<FFBTeamsResult> GetAllFFBTeamsAsync();
         Task<FFBTeamResult> AddFFBTeamAsync(Models.FFBTeams newTeam);
+        Task<FFBTeamResult> UpdateFFBTeamAsync(Models.FFBTeams updatedTeam);
         Task<FFBTeamResult> RemoveFFBTeamAsync(string teamId);
 
     }

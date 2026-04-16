@@ -58,7 +58,7 @@ namespace FFBDraftAPI.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> PostAddDraftAsync(Models.Draft draft)
+        public async Task<IActionResult> PostAddDraftAsync([FromBody]Models.Draft draft)
         {
             var result = await draftAccessor.AddDraftAsync(draft);
             if (result != null && result.success)
