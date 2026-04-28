@@ -1,4 +1,6 @@
 ﻿using FFBDraftAPI.Accessors;
+using FFBDraftAPI.Common;
+using FFBDraftAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FFBDraftAPI.Controllers
@@ -8,9 +10,11 @@ namespace FFBDraftAPI.Controllers
     public class DraftController : ControllerBase
     {
         protected IDraftAccessor draftAccessor;
-        public DraftController()
+        protected IPlayerAccessor playerAccessor;
+        public DraftController(IDraftAccessor draftAccessor, IPlayerAccessor playerAccessor)
         {
-            draftAccessor = new DraftAccessor();
+            this.draftAccessor = draftAccessor ?? throw new ArgumentNullException(nameof(draftAccessor));
+            this.playerAccessor = playerAccessor ?? throw new ArgumentNullException(nameof(playerAccessor));
         }
 
         /// <summary>
@@ -61,10 +65,20 @@ namespace FFBDraftAPI.Controllers
         public async Task<IActionResult> PostAddDraftAsync([FromBody]Models.Draft draft)
         {
             var result = await draftAccessor.AddDraftAsync(draft);
-            if (result != null && result.success)
-                return Ok(result.data);
-            else
-                return BadRequest(result?.message);
+            if (result != null && result.success && draft.PlayerId != null)
+            {
+                Models.Player resultPlayer = await playerAccessor.GetPlayerByYearAsync(draft.PlayerId.Value, draft.Year);
+                if (resultPlayer != null && result.success)
+                {
+                    resultPlayer.FFBTeam = draft.FfbteamId;
+                    resultPlayer.FFBTeamName = draft.FFBTeamName;
+                    resultPlayer.FFBTeamManager = draft.FFBTeamManager;
+                    await playerAccessor.EditPlayer(resultPlayer);
+                    return Ok(result.data);
+                }
+            }
+
+            return BadRequest(result?.message);
         }
 
         /// <summary>
@@ -99,7 +113,30 @@ namespace FFBDraftAPI.Controllers
         public async Task<IActionResult> DeleteDraftAsync(string Id)
         {
             Guid draftId = new Guid(Id);
+            var draftPick = await draftAccessor.GetDraftAsync(draftId);
+
+            if (draftPick != null && draftPick.PlayerId.HasValue)
+            {
+                Models.Player? resultPlayer = await playerAccessor.GetPlayerByYearAsync(draftPick.PlayerId.Value, draftPick.Year);
+                if (resultPlayer != null)
+                {
+                    var playerResult = await playerAccessor.EditPlayer(new Models.Player
+                    {
+                        Id = resultPlayer.Id,
+                        Name = resultPlayer.Name,
+                        Rank = resultPlayer.Rank,
+                        NFLTeam = resultPlayer.NFLTeam,
+                        Position = resultPlayer.Position,
+                        ByeWeek = resultPlayer.ByeWeek,
+                        FFBTeam = new Guid(Config.UndraftedTeamId),
+                        FFBTeamName = "Undrafted",
+                        FFBTeamManager = Config.UndraftedTeamManager,
+                        Year = resultPlayer.Year
+                    });
+                }
+            }
             var result = await draftAccessor.DeleteDraftAsync(draftId);
+
             if (result)
                 return Ok();
             else

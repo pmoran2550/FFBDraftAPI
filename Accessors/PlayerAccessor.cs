@@ -1,11 +1,12 @@
-﻿using FFBDraftAPI.EntityFramework;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+using FFBDraftAPI.EntityFramework;
 using FFBDraftAPI.Models;
 using FFBDraftAPI.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using CsvHelper;
-using CsvHelper.Configuration;
 using System.Globalization;
+using System.Numerics;
 
 namespace FFBDraftAPI.Accessors
 {
@@ -94,6 +95,38 @@ namespace FFBDraftAPI.Accessors
             }
             return playerListModel;
         }
+
+        public async Task<Models.Player> GetPlayerByYearAsync(Guid playerId, int year)
+        {
+            var teamListEF = await _context.Ffbteams.ToListAsync();
+            EntityFramework.Player? player = _context.Players.FirstOrDefault(x => x.Id == playerId && x.Year == year);
+
+            Models.Player playerModel = new Models.Player();
+
+            if (player != null)
+            {
+                Ffbteam? ffbTeam = null;
+
+                if (teamListEF != null && player.Ffbteam != null)
+                {
+                    ffbTeam = teamListEF.FirstOrDefault<Ffbteam>(team => team.Id == player.Ffbteam);
+                }
+
+                playerModel.Id = player.Id;
+                playerModel.Name = player.Name;
+                playerModel.Rank = player.Rank;
+                playerModel.NFLTeam = utilities.ConvertToNFLTeam(player.Nflteam);
+                playerModel.Position = utilities.ConvertToPosition(player.Position);
+                playerModel.ByeWeek = player.ByeWeek;
+                playerModel.FFBTeam = player.Ffbteam;
+                playerModel.FFBTeamName = ffbTeam?.Name ?? " ";
+                playerModel.FFBTeamManager = ffbTeam?.Manager ?? " ";
+                playerModel.Year = player.Year;
+            }
+
+            return playerModel;
+        }
+
 
         public async Task<PlayerResult> EditPlayer(Models.Player player)
         {

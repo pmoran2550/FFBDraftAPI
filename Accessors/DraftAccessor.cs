@@ -70,6 +70,51 @@ namespace FFBDraftAPI.Accessors
             return result;
         }
 
+        public async Task<Models.Draft?> GetDraftAsync(Guid id)
+        {
+            Models.Draft? draftItem = null;
+
+            using (var context = new FfbdbContext())
+            {
+                EntityFramework.Draft? draftItemEF = await context.Drafts.Where(x => x.Id == id).FirstOrDefaultAsync();
+                if (draftItemEF != null)
+                {
+                    draftItem = new Models.Draft()
+                    {
+                        Id = draftItemEF.Id,
+                        PlayerId = draftItemEF.PlayerId,
+                        FfbteamId = draftItemEF.FfbteamId,
+                        DraftNumber = draftItemEF.DraftNumber,
+                        Year = draftItemEF.Year
+                    };
+
+                    if (draftItem.FfbteamId != null)
+                    {
+                        Ffbteam? ffbTeam = await context.Ffbteams.Where(x => x.Id == draftItem.FfbteamId).FirstOrDefaultAsync();
+                        if (ffbTeam != null)
+                        {
+                            draftItem.FFBTeamManager = ffbTeam.Manager;
+                            draftItem.FFBTeamName = ffbTeam.Name;
+                        }
+                    }
+
+                    if (draftItem.PlayerId != null)
+                    {
+                        EntityFramework.Player? player = await context.Players.Where(x => x.Id == draftItem.PlayerId).FirstOrDefaultAsync();
+                        if (player != null)
+                        {
+                            draftItem.PlayerName = player.Name;
+                            draftItem.PlayerNFLTeam = utilities.ConvertToNFLTeam(player.Nflteam);
+                            draftItem.PlayerPosition = utilities.ConvertToPosition(player.Position);
+                        }
+                    }
+
+
+                }
+            }
+            return draftItem;
+        }
+
         public async Task<DraftsResult> GetAllDraftsByYearAsync(int year)
         {
             DraftsResult result = new DraftsResult();
@@ -132,20 +177,6 @@ namespace FFBDraftAPI.Accessors
 
             using (var context = new FfbdbContext())
             {
-                //Models.Draft newEFDraft = new Models.Draft()
-                //{
-                //    Id = Guid.NewGuid(),
-                //    FFBTeamManager = newDraft.FFBTeamManager,
-                //    FFBTeamName = newDraft.FFBTeamName,
-                //    FfbteamId = newDraft.FfbteamId,
-                //    DraftNumber = newDraft.DraftNumber,
-                //    PlayerId = newDraft.PlayerId,
-                //    PlayerNFLTeam = newDraft.PlayerNFLTeam,
-                //    PlayerName = newDraft.PlayerName,
-                //    PlayerPosition = newDraft.PlayerPosition,
-                //    Year = newDraft.Year
-                //};
-
                 EntityFramework.Draft newEFDraft = new EntityFramework.Draft()
                 {
                     Id = Guid.NewGuid(),

@@ -52,6 +52,7 @@ builder.Services.AddDbContext<FfbdbContext>(options =>
 
 builder.Services.AddScoped<IFFBTeamAccessor, FFBTeamAccessor>();
 builder.Services.AddScoped<IPlayerAccessor, PlayerAccessor>();
+builder.Services.AddScoped<IDraftAccessor, DraftAccessor>();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<NotificationService>();
