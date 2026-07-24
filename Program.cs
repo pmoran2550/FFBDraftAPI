@@ -1,12 +1,13 @@
+using FFBDraftAPI.Accessors;
+using FFBDraftAPI.Communication;
+using FFBDraftAPI.EntityFramework;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
-using FFBDraftAPI.EntityFramework;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using FFBDraftAPI.Communication;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,13 +16,12 @@ var domain = $"https://{builder.Configuration["Auth0:Domain"]}/";
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-// The Swagger version showed here will not match the version given in the .csproj file. 
-//  This is by design so the versions can be updated separately.
+// Register Swagger document as 'v2'
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Version = "1.0.0",
+        Version = "2.0.0",
         Title = "FFB API"
     });
 });
@@ -50,6 +50,10 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<FfbdbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FFBDraftdbConnectionString")));
 
+builder.Services.AddScoped<IFFBTeamAccessor, FFBTeamAccessor>();
+builder.Services.AddScoped<IPlayerAccessor, PlayerAccessor>();
+builder.Services.AddScoped<IDraftAccessor, DraftAccessor>();
+
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<NotificationService>();
 
@@ -59,7 +63,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    // Point Swagger UI at the v2 document
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "FFB API v2");
+    });
 }
 
 app.UseCors("AllowAngularApp");

@@ -1,5 +1,6 @@
 ﻿using FFBDraftAPI.Common;
 using FFBDraftAPI.EntityFramework;
+using FFBDraftAPI.Models;
 using FFBDraftAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,8 @@ namespace FFBDraftAPI.Accessors
                             Manager = teamAvailable.Manager,
                             ThirdPartyID = teamAvailable.ThirdPartyId,
                             Email = teamAvailable.Email,
-                            Nickname = teamAvailable.Nickname
+                            Nickname = teamAvailable.Nickname,
+                            DraftOrder = teamAvailable.DraftOrder ?? 0 
                         };
                         teamListModel.Add(teamModel);
                     }
@@ -45,7 +47,8 @@ namespace FFBDraftAPI.Accessors
                                 Manager = team.Manager,
                                 ThirdPartyID = team.ThirdPartyId,
                                 Email = team.Email,
-                                Nickname = team.Nickname
+                                Nickname = team.Nickname,
+                                DraftOrder = team.DraftOrder ?? 0
                             };
                             teamListModel.Add(teamModel);
                         }
@@ -96,6 +99,39 @@ namespace FFBDraftAPI.Accessors
                 }
             }
 
+            return result;
+        }
+
+        public async Task<FFBTeamResult> UpdateFFBTeamAsync(Models.FFBTeams team)
+        {
+            FFBTeamResult result = new FFBTeamResult();
+
+            try
+            {
+                using (var context = new FfbdbContext())
+                {
+                    EntityFramework.Ffbteam? teamToUpdate = context.Ffbteams.FirstOrDefault(x => x.Id == team.Id);
+                    if (teamToUpdate != null)
+                    {
+                        teamToUpdate.Name = team.Name;
+                        teamToUpdate.Manager = team.Manager;
+                        teamToUpdate.ThirdPartyId = team.ThirdPartyID;
+                        teamToUpdate.Email = team.Email;
+                        teamToUpdate.Nickname = team.Nickname;
+                        teamToUpdate.DraftOrder = team.DraftOrder;
+
+                        await context.SaveChangesAsync();
+                    }
+                }
+                result.success = true;
+                result.data = team;
+            }
+            catch (Exception ex)
+            {
+                result.success = false;
+                result.message = ex.Message;
+                result.data = new FFBTeams();
+            }
             return result;
         }
 
