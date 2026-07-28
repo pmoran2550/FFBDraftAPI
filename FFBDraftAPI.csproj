@@ -13,9 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FFBDraftAPITests\**" />
     <Compile Remove="Tests\**" />
+    <Content Remove="FFBDraftAPITests\**" />
     <Content Remove="Tests\**" />
+    <EmbeddedResource Remove="FFBDraftAPITests\**" />
     <EmbeddedResource Remove="Tests\**" />
+    <None Remove="FFBDraftAPITests\**" />
     <None Remove="Tests\**" />
   </ItemGroup>
 
@@ -42,6 +46,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="System.Formats.Asn1" Version="8.0.2" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
 
   <ItemGroup>
