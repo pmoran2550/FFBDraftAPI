@@ -12,16 +12,7 @@
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="FFBDraftAPITests\**" />
-    <Compile Remove="Tests\**" />
-    <Content Remove="FFBDraftAPITests\**" />
-    <Content Remove="Tests\**" />
-    <EmbeddedResource Remove="FFBDraftAPITests\**" />
-    <EmbeddedResource Remove="Tests\**" />
-    <None Remove="FFBDraftAPITests\**" />
-    <None Remove="Tests\**" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.17.1" />
