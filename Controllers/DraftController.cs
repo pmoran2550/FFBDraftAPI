@@ -1,5 +1,6 @@
 ﻿using FFBDraftAPI.Accessors;
 using FFBDraftAPI.Common;
+using FFBDraftAPI.Communication;
 using FFBDraftAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,12 @@ namespace FFBDraftAPI.Controllers
     {
         protected IDraftAccessor draftAccessor;
         protected IPlayerAccessor playerAccessor;
-        public DraftController(IDraftAccessor draftAccessor, IPlayerAccessor playerAccessor)
+        protected NotificationService _notificationService;
+        public DraftController(IDraftAccessor draftAccessor, IPlayerAccessor playerAccessor, NotificationService notificationService)
         {
             this.draftAccessor = draftAccessor ?? throw new ArgumentNullException(nameof(draftAccessor));
             this.playerAccessor = playerAccessor ?? throw new ArgumentNullException(nameof(playerAccessor));
+            _notificationService = notificationService ?? throw new ArgumentNullException(nameof(notificationService));
         }
 
         /// <summary>
@@ -74,6 +77,7 @@ namespace FFBDraftAPI.Controllers
                     resultPlayer.FFBTeamName = draft.FFBTeamName;
                     resultPlayer.FFBTeamManager = draft.FFBTeamManager;
                     await playerAccessor.EditPlayer(resultPlayer);
+                    await _notificationService.NotifyAll("all", "playersUpdated");
                     return Ok(result.data);
                 }
             }
@@ -138,7 +142,10 @@ namespace FFBDraftAPI.Controllers
             var result = await draftAccessor.DeleteDraftAsync(draftId);
 
             if (result)
+            {
+                await _notificationService.NotifyAll("all", "playersUpdated");
                 return Ok();
+            }
             else
                 return BadRequest("Failed to delete draft item.");
         }
