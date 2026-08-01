@@ -100,7 +100,10 @@ namespace FFBDraftAPI.Controllers
             updatedDraft.Id = new Guid(Id);
             var result = await draftAccessor.EditDraftAsync(updatedDraft);
             if (result != null && result.success)
+            {
+                await _notificationService.NotifyAll("all", "playersUpdated");
                 return Ok(result.data);
+            }
             else
                 return BadRequest(result?.message);
         }
