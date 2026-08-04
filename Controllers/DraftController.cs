@@ -98,9 +98,39 @@ namespace FFBDraftAPI.Controllers
         public async Task<IActionResult> PutEditDraftAsync(string Id, Models.Draft updatedDraft)
         {
             updatedDraft.Id = new Guid(Id);
+
+            var existingDraft = await draftAccessor.GetDraftAsync(updatedDraft.Id);
+
             var result = await draftAccessor.EditDraftAsync(updatedDraft);
             if (result != null && result.success)
             {
+                // If this pick previously held a different player, make that player available again
+                if (existingDraft != null && existingDraft.PlayerId.HasValue &&
+                    existingDraft.PlayerId != updatedDraft.PlayerId)
+                {
+                    Models.Player previousPlayer = await playerAccessor.GetPlayerByYearAsync(existingDraft.PlayerId.Value, existingDraft.Year);
+                    if (previousPlayer != null)
+                    {
+                        previousPlayer.FFBTeam = new Guid(Config.UndraftedTeamId);
+                        previousPlayer.FFBTeamName = "Undrafted";
+                        previousPlayer.FFBTeamManager = Config.UndraftedTeamManager;
+                        await playerAccessor.EditPlayer(previousPlayer);
+                    }
+                }
+
+                // Mark the newly-assigned player as drafted by this team
+                if (updatedDraft.PlayerId.HasValue)
+                {
+                    Models.Player newPlayer = await playerAccessor.GetPlayerByYearAsync(updatedDraft.PlayerId.Value, updatedDraft.Year);
+                    if (newPlayer != null)
+                    {
+                        newPlayer.FFBTeam = updatedDraft.FfbteamId;
+                        newPlayer.FFBTeamName = updatedDraft.FFBTeamName;
+                        newPlayer.FFBTeamManager = updatedDraft.FFBTeamManager;
+                        await playerAccessor.EditPlayer(newPlayer);
+                    }
+                }
+
                 await _notificationService.NotifyAll("all", "playersUpdated");
                 return Ok(result.data);
             }
